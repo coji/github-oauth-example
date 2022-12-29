@@ -1,32 +1,27 @@
+import type { LoaderArgs } from '@remix-run/node'
+import { useLoaderData } from '@remix-run/react'
+
+export const loader = async (args: LoaderArgs) => {
+  return {
+    clientId: process.env.GITHUB_CLIENT_ID,
+  }
+}
+
 export default function Index() {
+  const { clientId } = useLoaderData<typeof loader>()
+
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.4" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
+    <div>
+      <h1>cojis GitHub Oauth example</h1>
+      <div>
+        <button>
           <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
+            href={`https://github.com/login/oauth/authorize?client_id=${clientId}`}
           >
-            15m Quickstart Blog Tutorial
+            Login with GitHub
           </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+        </button>
+      </div>
     </div>
-  );
+  )
 }
