@@ -1,8 +1,7 @@
-import type { LoaderArgs } from '@remix-run/node'
 import { useLoaderData } from '@remix-run/react'
 import { Grid, Container, Heading, Box, HStack, Button } from '@chakra-ui/react'
 
-export const loader = (args: LoaderArgs) => ({
+export const loader = () => ({
   clientId: process.env.GITHUB_CLIENT_ID ?? '',
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? '',
 })

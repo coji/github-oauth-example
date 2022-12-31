@@ -2,17 +2,15 @@ import type { LoaderArgs } from '@remix-run/node'
 import invariant from 'tiny-invariant'
 
 const fetchAccessToken = async (code: string) => {
-  const params = new URLSearchParams({
-    code,
-    grant_type: 'authorization_code',
-    client_id: process.env.GOOGLE_CLIENT_ID ?? '',
-    client_secret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-    redirect_uri: 'http://localhost:3000/api/auth/google_callback',
-  })
-
   const ret = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
-    body: params.toString(),
+    body: new URLSearchParams({
+      code,
+      grant_type: 'authorization_code',
+      client_id: process.env.GOOGLE_CLIENT_ID ?? '',
+      client_secret: process.env.GOOGLE_CLIENT_SECRET ?? '',
+      redirect_uri: 'http://localhost:3000/api/auth/google_callback',
+    }).toString(),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
