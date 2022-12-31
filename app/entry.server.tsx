@@ -14,8 +14,6 @@ export default function handleRequest(
   remixContext: EntryContext,
 ) {
   const cache = createEmotionCache()
-  const { extractCriticalToChunks } = createEmotionServer(cache)
-
   const html = renderToString(
     <ServerStyleContext.Provider value={null}>
       <CacheProvider value={cache}>
@@ -23,7 +21,8 @@ export default function handleRequest(
       </CacheProvider>
     </ServerStyleContext.Provider>,
   )
-  const chunks = extractCriticalToChunks(html)
+  const emotionServer = createEmotionServer(cache)
+  const chunks = emotionServer.extractCriticalToChunks(html)
   const markup = renderToString(
     <ServerStyleContext.Provider value={chunks.styles}>
       <CacheProvider value={cache}>
