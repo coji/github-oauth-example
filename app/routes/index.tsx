@@ -10,13 +10,13 @@ export default function Index() {
   const { clientId } = useLoaderData<typeof loader>()
 
   return (
-    <Grid height="100vh" templateRows="auto 1fr auto" p="0">
+    <Grid templateRows="auto 1fr auto" h="100vh" p="0">
       <Heading>coji&rsquo;s GitHub OAuth example</Heading>
       <Container>
         <div>
           <Button
-            colorScheme="blue"
             as="a"
+            colorScheme="blue"
             href={`https://github.com/login/oauth/authorize?client_id=${clientId}`}
           >
             Login with GitHub
