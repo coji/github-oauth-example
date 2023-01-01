@@ -1,6 +1,9 @@
 import type { LoaderArgs } from '@remix-run/node'
 import invariant from 'tiny-invariant'
-import { fetchAccessToken, fetchUser } from '~/features/oauth2-login/github'
+import {
+  fetchAccessToken,
+  fetchUser,
+} from '~/features/oauth2-login/libs/github'
 
 export const loader = async ({ request }: LoaderArgs) => {
   const code = new URL(request.url).searchParams.get('code')

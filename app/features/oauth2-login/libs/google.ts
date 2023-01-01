@@ -13,6 +13,14 @@ const isGoogleUser = (user: unknown): user is GoogleUser => {
   return typeof user === 'object' && user !== null && 'email' in user
 }
 
+export const redirectUri = () => {
+  if (typeof window === 'undefined') {
+    return `${process.env.BASE_URL ?? ''}/api/auth/callback/google`
+  } else {
+    return `${location.origin}/api/auth/callback/google`
+  }
+}
+
 export const fetchAccessToken = async (code: string) => {
   const ret = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
@@ -21,7 +29,7 @@ export const fetchAccessToken = async (code: string) => {
       grant_type: 'authorization_code',
       client_id: process.env.GOOGLE_CLIENT_ID ?? '',
       client_secret: process.env.GOOGLE_CLIENT_SECRET ?? '',
-      redirect_uri: 'http://localhost:3000/api/auth/callback/google',
+      redirect_uri: redirectUri(),
     }).toString(),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

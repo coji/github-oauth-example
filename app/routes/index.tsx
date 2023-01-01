@@ -1,33 +1,23 @@
 import { useLoaderData } from '@remix-run/react'
-import { Grid, Container, Heading, Box, HStack, Button } from '@chakra-ui/react'
+import { Grid, Container, Heading, Box, HStack } from '@chakra-ui/react'
+import { GithubLoginButton } from '~/features/oauth2-login/components/GithubLoginButton'
+import { GoogleLoginButton } from '~/features/oauth2-login/components/GoogleLoginButton'
 
 export const loader = () => ({
-  clientId: process.env.GITHUB_CLIENT_ID ?? '',
+  githubClientId: process.env.GITHUB_CLIENT_ID ?? '',
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? '',
 })
 
 export default function Index() {
-  const { clientId, googleClientId } = useLoaderData<typeof loader>()
+  const { githubClientId, googleClientId } = useLoaderData<typeof loader>()
 
   return (
     <Grid templateRows="auto 1fr auto" h="100vh" p="0">
       <Heading>coji&rsquo;s GitHub OAuth example</Heading>
       <Container>
         <HStack>
-          <Button
-            as="a"
-            colorScheme="blue"
-            href={`https://github.com/login/oauth/authorize?client_id=${clientId}`}
-          >
-            Login with GitHub
-          </Button>
-          <Button
-            as="a"
-            colorScheme="blue"
-            href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&response_type=code&scope=openid email profile&redirect_uri=http://localhost:3000/api/auth/callback/google&nonce=1&state=state1`}
-          >
-            Login with Google
-          </Button>
+          <GithubLoginButton clientId={githubClientId} />
+          <GoogleLoginButton clientId={googleClientId} />
         </HStack>
       </Container>
       <Box as="footer">copyright &copy; 2021 coji.</Box>
