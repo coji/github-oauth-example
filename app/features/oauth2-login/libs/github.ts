@@ -1,5 +1,8 @@
 import invariant from 'tiny-invariant'
 
+invariant(process.env.GITHUB_CLIENT_ID, 'GITHUB_CLIENT_ID must be set')
+invariant(process.env.GITHUB_CLIENT_SECRET, 'GITHUB_CLIENT_SECRET must be set')
+
 interface GitHubUser {
   login: string
   id: number

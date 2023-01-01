@@ -1,5 +1,9 @@
 import invariant from 'tiny-invariant'
 
+invariant(process.env.GOOGLE_CLIENT_ID, 'GOOGLE_CLIENT_ID must be set')
+invariant(process.env.GOOGLE_CLIENT_SECRET, 'GOOGLE_CLIENT_SECRET must be set')
+invariant(process.env.BASE_URL, 'BASE_URL must be set')
+
 interface GoogleUser {
   id: number
   email: string
@@ -13,13 +17,8 @@ const isGoogleUser = (user: unknown): user is GoogleUser => {
   return typeof user === 'object' && user !== null && 'email' in user
 }
 
-export const redirectUri = () => {
-  if (typeof window === 'undefined') {
-    return `${process.env.BASE_URL ?? ''}/api/auth/callback/google`
-  } else {
-    return `${location.origin}/api/auth/callback/google`
-  }
-}
+export const redirectUri = () =>
+  `${process.env.BASE_URL ?? ''}/api/auth/callback/google`
 
 export const fetchAccessToken = async (code: string) => {
   const ret = await fetch('https://oauth2.googleapis.com/token', {

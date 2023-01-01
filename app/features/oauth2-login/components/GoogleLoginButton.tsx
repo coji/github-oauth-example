@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@chakra-ui/react'
-import { redirectUri } from '../libs/google'
 
 interface GoogleLoginButtonProps {
   clientId: string
@@ -19,7 +18,7 @@ export const GoogleLoginButton = ({
         client_id: clientId,
         response_type: 'code',
         scope: 'openid email profile',
-        redirect_uri: redirectUri(),
+        redirect_uri: `${location.origin}/api/auth/callback/google`,
         nonce: '1',
         state: 'state1',
       }),
