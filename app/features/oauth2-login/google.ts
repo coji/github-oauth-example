@@ -27,7 +27,7 @@ export const fetchAccessToken = async (code: string) => {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
   })
-  invariant(ret.ok)
+  invariant(ret.ok, 'Failed to get access token from Google.')
 
   const { access_token } = (await ret.json()) as unknown as Record<
     string,
@@ -44,7 +44,7 @@ export const fetchUser = async (accessToken: string): Promise<GoogleUser> => {
   })
   invariant(ret.ok, 'Failed to get user from GitHub.')
   const user: unknown = await ret.json()
-  invariant(isGoogleUser(user), 'ret is not google user')
+  invariant(isGoogleUser(user), 'invalid google user')
 
   return user
 }

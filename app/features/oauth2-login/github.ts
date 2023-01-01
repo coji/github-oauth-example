@@ -39,7 +39,7 @@ export const fetchUser = async (accessToken: string): Promise<GitHubUser> => {
   })
   invariant(ret.ok, 'Failed to get user from GitHub.')
   const user: unknown = await ret.json()
-  invariant(isGitHubUser(user))
+  invariant(isGitHubUser(user), 'invalid github user')
 
   return user
 }
