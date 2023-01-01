@@ -24,7 +24,7 @@ export default function Index() {
           <Button
             as="a"
             colorScheme="blue"
-            href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&response_type=code&scope=openid email profile&redirect_uri=http://localhost:3000/api/auth/google_callback&nonce=1&state=state1`}
+            href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&response_type=code&scope=openid email profile&redirect_uri=http://localhost:3000/api/auth/callback/google&nonce=1&state=state1`}
           >
             Login with Google
           </Button>

@@ -7,7 +7,7 @@ import {
   Scripts,
   ScrollRestoration,
 } from '@remix-run/react'
-import { MetaFunction, LinksFunction } from '@remix-run/node' // Depends on the runtime you choose
+import type { MetaFunction, LinksFunction } from '@remix-run/node' // Depends on the runtime you choose
 import { withEmotionCache } from '@emotion/react'
 import { ChakraProvider } from '@chakra-ui/react'
 import { ServerStyleContext, ClientStyleContext } from './context'
@@ -46,10 +46,12 @@ const Document = withEmotionCache(
       const tags = emotionCache.sheet.tags
       emotionCache.sheet.flush()
       tags.forEach((tag) => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
         ;(emotionCache.sheet as any)._insertTag(tag)
       })
       // reset cache to reapply global styles
       clientStyleData?.reset()
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     return (
