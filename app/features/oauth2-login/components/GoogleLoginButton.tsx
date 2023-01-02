@@ -1,5 +1,6 @@
 import type { ButtonProps } from '@chakra-ui/react'
 import { Button } from '@chakra-ui/react'
+import { AiOutlineGoogle } from 'react-icons/ai'
 
 interface GoogleLoginButtonProps extends ButtonProps {
   children?: React.ReactNode
@@ -10,8 +11,15 @@ export const GoogleLoginButton = ({
   ...rest
 }: GoogleLoginButtonProps) => {
   return (
-    <Button as="a" colorScheme="blue" href="/api/auth/login/google" {...rest}>
-      {children ?? 'Login with Google'}
+    <Button
+      as="a"
+      colorScheme="gray"
+      href="/api/auth/login/google"
+      leftIcon={<AiOutlineGoogle />}
+      variant="outline"
+      {...rest}
+    >
+      {children ?? 'Googleアカウントで続ける'}
     </Button>
   )
 }
