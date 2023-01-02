@@ -25,6 +25,7 @@ export const fetchAccessToken = async (code: string) => {
     method: 'POST',
     body: new URLSearchParams({
       code,
+      code_verifier: 'verifier-text-is-here!',
       grant_type: 'authorization_code',
       client_id: process.env.GOOGLE_CLIENT_ID ?? '',
       client_secret: process.env.GOOGLE_CLIENT_SECRET ?? '',
@@ -36,10 +37,9 @@ export const fetchAccessToken = async (code: string) => {
   })
   invariant(ret.ok, 'Failed to get access token from Google.')
 
-  const { access_token } = (await ret.json()) as unknown as Record<
-    string,
-    string
-  >
+  const json: unknown = await ret.json()
+  console.log(json)
+  const { access_token } = json as Record<string, string>
   return access_token
 }
 
