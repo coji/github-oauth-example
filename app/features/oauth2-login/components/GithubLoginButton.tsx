@@ -11,12 +11,13 @@ export const GithubLoginButton = ({
 }: GithubLoginButtonProps) => (
   <Button
     as="a"
+    bgColor="white"
     colorScheme="gray"
     href="/api/auth/login/github"
     leftIcon={<AiOutlineGithub />}
     variant="outline"
     {...rest}
   >
-    {children ?? 'GitHubアカウントで続ける'}
+    {children ?? 'GitHub'}
   </Button>
 )

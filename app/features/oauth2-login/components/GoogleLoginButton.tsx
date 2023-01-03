@@ -13,13 +13,14 @@ export const GoogleLoginButton = ({
   return (
     <Button
       as="a"
+      bgColor="white"
       colorScheme="gray"
       href="/api/auth/login/google"
       leftIcon={<AiOutlineGoogle />}
       variant="outline"
       {...rest}
     >
-      {children ?? 'Googleアカウントで続ける'}
+      {children ?? 'Google'}
     </Button>
   )
 }
