@@ -2,6 +2,8 @@ import invariant from 'tiny-invariant'
 
 invariant(process.env.GITHUB_CLIENT_ID, 'GITHUB_CLIENT_ID must be set')
 invariant(process.env.GITHUB_CLIENT_SECRET, 'GITHUB_CLIENT_SECRET must be set')
+const GITHUB_CLIENT_ID = process.env.GITHUB_CLIENT_ID
+const GITHUB_CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET
 
 interface GitHubUser {
   login: string
@@ -20,8 +22,8 @@ const isGitHubUser = (user: unknown): user is GitHubUser => {
 export const fetchAccessToken = async (code: string) => {
   const params = new URLSearchParams({
     code,
-    client_id: process.env.GITHUB_CLIENT_ID ?? '',
-    client_secret: process.env.GITHUB_CLIENT_SECRET ?? '',
+    client_id: GITHUB_CLIENT_ID,
+    client_secret: GITHUB_CLIENT_SECRET,
   })
   const ret = await fetch(
     `https://github.com/login/oauth/access_token?${params.toString()}`,
