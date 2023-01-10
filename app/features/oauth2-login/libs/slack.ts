@@ -1,4 +1,3 @@
-import got from 'got'
 import invariant from 'tiny-invariant'
 import jwt_decode from 'jwt-decode'
 
@@ -44,10 +43,14 @@ export const fetchAccessToken = async (code: string) => {
     redirect_uri: `${BASE_URL}/api/auth/callback/slack`,
     grand_type: 'authorization_code',
   })
-  const tokens = await got
-    .get(`https://slack.com/api/openid.connect.token?${params.toString()}`)
-    .json<SlackAccessToken>()
-    .catch(() => null)
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+  const ret = await fetch(
+    `https://slack.com/api/openid.connect.token?${params.toString()}`,
+  )
+  invariant(ret.ok, 'Failed to get access token from Slack.')
+
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const tokens: SlackAccessToken | null = await ret.json()
   invariant(tokens, 'Failed to get access token from Slack.')
 
   return tokens
