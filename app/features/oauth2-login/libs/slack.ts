@@ -19,18 +19,6 @@ interface SlackAccessToken {
   expires_in: number
 }
 
-interface SlackUser {
-  teamId: string
-  userId: string
-  name: string
-  email: string
-  locale: string
-  picture: string
-  teamName: string
-  teamDomain: string
-  teamImage: string
-}
-
 /**
  * Slack 認証画面への URL を生成する
  */
@@ -65,18 +53,8 @@ export const fetchAccessToken = async (code: string) => {
   return tokens
 }
 
-export const fetchUser = (idToken: string): SlackUser => {
-  const token = jwt_decode(idToken) satisfies Record<string, string>
-
-  return {
-    userId: token['https://slack.com/user_id'],
-    name: token.name,
-    email: token.email,
-    locale: token.locale,
-    picture: token.picture,
-    teamId: token['https://slack.com/team_id'],
-    teamName: token['https://slack.com/team_name'],
-    teamDomain: token['https://slack.com/team_domain'],
-    teamImage: token['https://slack.com/team_image_230'],
-  }
+export const fetchUser = (idToken: string): Record<string, string> => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const payload: Record<string, any> = jwt_decode(idToken)
+  return payload
 }

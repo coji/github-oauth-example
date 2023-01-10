@@ -1,3 +1,4 @@
+import { Form } from '@remix-run/react'
 import type { ButtonProps } from '@chakra-ui/react'
 import { Button } from '@chakra-ui/react'
 import { AiOutlineSlack } from 'react-icons/ai'
@@ -9,15 +10,16 @@ export const SlackLoginButton = ({
   children,
   ...rest
 }: GithubLoginButtonProps) => (
-  <Button
-    as="a"
-    bgColor="white"
-    colorScheme="gray"
-    href="/api/auth/login/slack"
-    leftIcon={<AiOutlineSlack />}
-    variant="outline"
-    {...rest}
-  >
-    {children ?? 'Slack'}
-  </Button>
+  <Form action="/auth/slack">
+    <Button
+      bgColor="white"
+      colorScheme="gray"
+      leftIcon={<AiOutlineSlack />}
+      type="submit"
+      variant="outline"
+      {...rest}
+    >
+      {children ?? 'Slack'}
+    </Button>
+  </Form>
 )

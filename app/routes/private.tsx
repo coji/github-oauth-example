@@ -19,7 +19,7 @@ export default function Private() {
   const { profile } = useLoaderData<typeof loader>()
   return (
     <Box>
-      <Box>{profile.displayName}</Box>
+      <Box>{JSON.stringify(profile)}</Box>
       <Form method="post">
         <Button type="submit">LogOut</Button>
       </Form>
