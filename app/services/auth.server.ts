@@ -12,7 +12,11 @@ import {
   type SlackProfile,
 } from './SlackStrategy.server'
 import invariant from 'tiny-invariant'
-import { addUser, findUserByProviderUserId } from '~/models/user.server'
+import {
+  addUser,
+  updateUser,
+  findUserByProviderUserId,
+} from '~/models/user.server'
 
 invariant(process.env.BASE_URL, 'BASE_URL is required')
 invariant(process.env.SESSION_SECRET, 'SESSION_SECRET is required')
@@ -53,6 +57,16 @@ const githubVerify: StrategyVerifyCallback<
       photoURL: profile.photos?.[0].value,
       teamId: '',
     })
+  } else {
+    await updateUser({
+      id: user.id,
+      provider: 'github',
+      providerUserId: profile.id,
+      displayName: profile.displayName,
+      email: profile.emails?.[0].value,
+      photoURL: profile.photos?.[0].value,
+      teamId: '',
+    })
   }
   if (!user) {
     throw new Error('User not found')
@@ -82,6 +96,16 @@ const slackVerify: StrategyVerifyCallback<
   if (!user) {
     // 新規ユーザ
     user = await addUser({
+      provider: 'slack',
+      providerUserId: profile.id,
+      displayName: profile.displayName,
+      email: profile.emails?.[0].value,
+      photoURL: profile.photos?.[0].value,
+      teamId: profile.team.id,
+    })
+  } else {
+    await updateUser({
+      id: user.id,
       provider: 'slack',
       providerUserId: profile.id,
       displayName: profile.displayName,
