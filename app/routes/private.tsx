@@ -2,22 +2,24 @@ import { Outlet } from '@remix-run/react'
 import type { LoaderArgs, ActionArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, useLoaderData } from '@remix-run/react'
-import { Heading, Grid, Box, Button, Avatar } from '@chakra-ui/react'
+import { Heading, Grid, Box, Button } from '@chakra-ui/react'
 
 import { auth } from '~/services/auth.server'
+import { getUser } from '~/models/user.server'
 
 export const action = async ({ request }: ActionArgs) =>
   await auth.logout(request, { redirectTo: '/' })
 
 export const loader = async ({ request }: LoaderArgs) => {
-  const { profile, extraParams } = await auth.isAuthenticated(request, {
+  const { userId } = await auth.isAuthenticated(request, {
     failureRedirect: '/',
   })
-  return json({ profile, extraParams })
+  const user = await getUser(userId)
+  return json({ user })
 }
 
 export default function Private() {
-  const { profile } = useLoaderData<typeof loader>()
+  const { user } = useLoaderData<typeof loader>()
   return (
     <Grid templateRows="auto 1fr auto" minH="100vh">
       <Heading>
@@ -25,11 +27,7 @@ export default function Private() {
         <Form method="post">
           <Button type="submit">LogOut</Button>
         </Form>
-        <Box>
-          <Avatar src={profile.photos?.[0].value} />
-          <Box>{profile.displayName}</Box>
-          {JSON.stringify(profile)}
-        </Box>
+        <Box>{JSON.stringify(user)}</Box>
       </Heading>
       <Outlet />
       <Box as="footer" p="4" textAlign="center">

@@ -1,16 +1,18 @@
 import { createCookieSessionStorage } from '@remix-run/node'
-import { Authenticator } from 'remix-auth'
-import {
-  GitHubStrategy,
-  type GitHubProfile,
-  type GitHubExtraParams,
-} from 'remix-auth-github'
+import { Authenticator, type StrategyVerifyCallback } from 'remix-auth'
+import type { OAuth2StrategyVerifyParams } from 'remix-auth-oauth2'
+// import {
+//   GitHubStrategy,
+//   type GitHubProfile,
+//   type GitHubExtraParams,
+// } from 'remix-auth-github'
 import {
   SlackStrategy,
   type SlackExtraParams,
   type SlackProfile,
 } from '../features/oauth2-login/libs/SlackStrategy.server'
 import invariant from 'tiny-invariant'
+import { getUser, addUser, type User } from '~/models/user.server'
 
 invariant(process.env.BASE_URL, 'BASE_URL is required')
 invariant(process.env.SESSION_SECRET, 'SESSION_SECRET is required')
@@ -18,6 +20,10 @@ invariant(process.env.GITHUB_CLIENT_ID, 'GITHUB_CLIENT_ID is required')
 invariant(process.env.GITHUB_CLIENT_SECRET, 'GITHUB_CLIENT_SECRET is required')
 invariant(process.env.SLACK_CLIENT_ID, 'SLACK_CLIENT_ID is required')
 invariant(process.env.SLACK_CLIENT_SECRET, 'SLACK_CLIENT_SECRET is required')
+
+export interface SessionUser {
+  userId: string
+}
 
 export const sessionStorage = createCookieSessionStorage({
   cookie: {
@@ -30,19 +36,9 @@ export const sessionStorage = createCookieSessionStorage({
   },
 })
 
-export const auth = new Authenticator<
-  | {
-      profile: GitHubProfile
-      accessToken: string
-      extraParams: GitHubExtraParams
-    }
-  | {
-      profile: SlackProfile
-      accessToken: string
-      extraParams: SlackExtraParams
-    }
->(sessionStorage)
+export const auth = new Authenticator<SessionUser>(sessionStorage)
 
+/*
 auth.use(
   new GitHubStrategy(
     {
@@ -54,12 +50,31 @@ auth.use(
       ).toString(),
     },
     // eslint-disable-next-line @typescript-eslint/require-await
-    async (params) => {
-      console.log('verify', params)
-      return params
+    async ({ profile, accessToken, extraParams }) => {
+
     },
   ),
-)
+) */
+
+const slackVerify: StrategyVerifyCallback<
+  SessionUser,
+  OAuth2StrategyVerifyParams<SlackProfile, SlackExtraParams>
+> = async ({ profile, accessToken, extraParams }) => {
+  let user = await getUser(profile.id)
+  if (!user) {
+    user = await addUser({
+      id: profile.id,
+      displayName: profile.displayName,
+      email: profile.emails?.[0].value,
+      photoURL: profile.photos?.[0].value,
+      teamId: profile.team.id,
+    })
+  }
+  if (!user) {
+    throw new Error('User not found')
+  }
+  return { userId: user.id }
+}
 
 auth.use(
   new SlackStrategy(
@@ -71,10 +86,6 @@ auth.use(
         process.env.BASE_URL,
       ).toString(),
     },
-    // eslint-disable-next-line @typescript-eslint/require-await
-    async (params) => {
-      console.log('verify', params)
-      return params
-    },
+    slackVerify,
   ),
 )

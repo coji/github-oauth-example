@@ -17,6 +17,7 @@ module.exports = {
     'chakra-ui/props-order': 'error',
     'chakra-ui/props-shorthand': 'error',
     'chakra-ui/require-specific-component': 'error',
+    'no-undef': 'off',
   },
   settings: {
     'import/resolver': {

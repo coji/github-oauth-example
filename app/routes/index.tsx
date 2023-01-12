@@ -17,6 +17,7 @@ import { SlackLoginButton } from '~/features/oauth2-login/components/SlackLoginB
 import { GithubLoginButton } from '~/features/oauth2-login/components/GithubLoginButton'
 import { GoogleLoginButton } from '~/features/oauth2-login/components/GoogleLoginButton'
 import { PasswordField } from '~/components/PasswordField'
+
 export default function Index() {
   return (
     <Grid
