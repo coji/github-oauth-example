@@ -43,7 +43,6 @@ export const fetchAccessToken = async (code: string) => {
     redirect_uri: `${BASE_URL}/api/auth/callback/slack`,
     grand_type: 'authorization_code',
   })
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
   const ret = await fetch(
     `https://slack.com/api/openid.connect.token?${params.toString()}`,
   )

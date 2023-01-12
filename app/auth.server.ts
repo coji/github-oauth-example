@@ -73,6 +73,7 @@ auth.use(
     },
     // eslint-disable-next-line @typescript-eslint/require-await
     async (params) => {
+      console.log('verify', params)
       return params
     },
   ),

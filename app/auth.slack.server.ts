@@ -52,8 +52,8 @@ export interface SlackProfile extends OAuth2Profile {
   }
 }
 
-export interface SlackExtraParams extends Record<string, string | number> {
-  id_token: string
+export interface SlackExtraParams extends Record<string, unknown> {
+  idToken: string
 }
 
 export const SlackStrategyDefaultScope: SlackScope[] = [
@@ -62,6 +62,13 @@ export const SlackStrategyDefaultScope: SlackScope[] = [
   'email',
 ]
 export const SlackStrategyScopeSeparator = ' '
+
+interface SlackOpenIDConnectTokenResponse {
+  ok: boolean
+  access_token: string
+  token_type: string
+  id_token: string
+}
 
 export class SlackStrategy<User> extends OAuth2Strategy<
   User,
@@ -78,7 +85,6 @@ export class SlackStrategy<User> extends OAuth2Strategy<
       OAuth2StrategyVerifyParams<SlackProfile, SlackExtraParams>
     >,
   ) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     super(
       {
         clientID,
@@ -112,15 +118,14 @@ export class SlackStrategy<User> extends OAuth2Strategy<
     refreshToken: string
     extraParams: SlackExtraParams
   }> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const res = await response.json()
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const { access_token, refresh_token, ...extraParams } = res
+    const { access_token, id_token } =
+      (await response.json()) as SlackOpenIDConnectTokenResponse
     return {
-      accessToken: access_token as string,
-      refreshToken: refresh_token as string,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-      extraParams,
+      accessToken: access_token,
+      refreshToken: '',
+      extraParams: {
+        idToken: id_token,
+      },
     } as const
   }
 
@@ -129,7 +134,7 @@ export class SlackStrategy<User> extends OAuth2Strategy<
     accessToken: string,
     extraParams: SlackExtraParams,
   ): Promise<SlackProfile> {
-    const payload: SlackIdTokenPayload = jwt_decode(extraParams.id_token)
+    const payload: SlackIdTokenPayload = jwt_decode(extraParams.idToken)
 
     const profile: SlackProfile = {
       provider: 'slack',
