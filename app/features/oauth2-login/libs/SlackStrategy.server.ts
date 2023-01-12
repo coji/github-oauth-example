@@ -40,14 +40,12 @@ export interface SlackIdTokenPayload {
 }
 export interface SlackProfile extends OAuth2Profile {
   id: string
-  _json: {
-    team: {
-      id: SlackIdTokenPayload['https://slack.com/team_id']
-      name: SlackIdTokenPayload['https://slack.com/team_name']
-      domain: SlackIdTokenPayload['https://slack.com/team_domain']
-      images: {
-        [key: string]: string | boolean | number
-      }
+  team: {
+    id: SlackIdTokenPayload['https://slack.com/team_id']
+    name: SlackIdTokenPayload['https://slack.com/team_name']
+    domain: SlackIdTokenPayload['https://slack.com/team_domain']
+    images: {
+      [key: string]: string | boolean | number
     }
   }
 }
@@ -146,17 +144,17 @@ export class SlackStrategy<User> extends OAuth2Strategy<
       },
       emails: [{ value: payload.email }],
       photos: [{ value: payload.picture }],
-      _json: {
-        team: {
-          id: payload['https://slack.com/team_id'],
-          name: payload['https://slack.com/team_name'],
-          domain: payload['https://slack.com/team_domain'],
-          images: Object.fromEntries(
-            Object.entries(payload).filter(([k, v]) =>
-              k.startsWith('https://slack.com/team_image_'),
-            ),
+      team: {
+        id: payload['https://slack.com/team_id'],
+        name: payload['https://slack.com/team_name'],
+        domain: payload['https://slack.com/team_domain'],
+        images: Object.fromEntries(
+          Object.entries(payload).filter(
+            ([k, v]) =>
+              k.startsWith('https://slack.com/team_image_') &&
+              !k.startsWith('https://slack.com/team_image_default'),
           ),
-        },
+        ),
       },
     }
     return profile

@@ -9,7 +9,7 @@ import {
   SlackStrategy,
   type SlackExtraParams,
   type SlackProfile,
-} from './auth.slack.server'
+} from '../features/oauth2-login/libs/SlackStrategy.server'
 import invariant from 'tiny-invariant'
 
 invariant(process.env.BASE_URL, 'BASE_URL is required')
