@@ -48,10 +48,10 @@ export default function Index() {
 
                 <PasswordField />
 
-                <HStack justify="space-between">
+                <HStack justify="space-between" w="full">
                   <Checkbox defaultChecked>ログインを記憶</Checkbox>
                   <Button colorScheme="blue" size="sm" variant="link">
-                    Forgot password?
+                    パスワードを忘れた?
                   </Button>
                 </HStack>
 

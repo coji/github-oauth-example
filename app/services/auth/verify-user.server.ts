@@ -27,7 +27,7 @@ export const verifyUser: StrategyVerifyCallback<
     SupportedSocialProviderProfile,
     SupportedSocialProviderExtraParams
   >
-> = async ({ profile, extraParams, context }) => {
+> = async ({ profile, accessToken, refreshToken, extraParams, context }) => {
   invariant(profile.id, 'profile.id is required')
   invariant(context, 'context is required')
   invariant(context.provider, 'context.provider is required')
@@ -40,7 +40,6 @@ export const verifyUser: StrategyVerifyCallback<
     displayName: profile.displayName,
     email: profile.emails?.[0].value,
     photoURL: profile.photos?.[0].value,
-    teamId: '',
   }
 
   if (!user) {

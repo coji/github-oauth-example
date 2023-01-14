@@ -11,7 +11,7 @@ export interface User {
   displayName?: string
   email?: string
   photoURL?: string
-  teamId: string
+  teamId?: string
 }
 
 const converter: FirestoreDataConverter<User> = {
