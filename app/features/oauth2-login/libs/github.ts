@@ -29,7 +29,10 @@ export const generateAuthUrl = (request: Request) => {
   return `https://github.com/login/oauth/authorize?${params.toString()}`
 }
 
-export const fetchAccessToken = async (code: string) => {
+export const fetchAccessToken = async (request: Request) => {
+  const code = new URL(request.url).searchParams.get('code')
+  invariant(code, 'No code found in the URL.')
+
   const params = new URLSearchParams({
     code,
     client_id: GITHUB_CLIENT_ID,
