@@ -5,7 +5,6 @@ import { strategy as GoogleStrategy } from './auth/google-auth.server'
 import { strategy as GitHubStrategy } from './auth/github-auth.server'
 import { strategy as SlackStrategy } from './auth/slack-auth.server'
 
-invariant(process.env.BASE_URL, 'BASE_URL is required')
 invariant(process.env.SESSION_SECRET, 'SESSION_SECRET is required')
 
 export interface SessionUser {

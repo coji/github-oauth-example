@@ -19,6 +19,16 @@ const isGitHubUser = (user: unknown): user is GitHubUser => {
   return typeof user === 'object' && user !== null && 'login' in user
 }
 
+/**
+ * Google 認証画面への URL を生成する
+ */
+export const generateAuthUrl = (request: Request) => {
+  const params = new URLSearchParams({
+    client_id: GITHUB_CLIENT_ID,
+  })
+  return `https://github.com/login/oauth/authorize?${params.toString()}`
+}
+
 export const fetchAccessToken = async (code: string) => {
   const params = new URLSearchParams({
     code,

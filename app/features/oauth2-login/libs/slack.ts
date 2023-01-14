@@ -1,10 +1,8 @@
 import invariant from 'tiny-invariant'
 import jwt_decode from 'jwt-decode'
 
-invariant(process.env.BASE_URL, 'BASE_URL must be set')
 invariant(process.env.SLACK_CLIENT_ID, 'SLACK_CLIENT_ID must be set')
 invariant(process.env.SLACK_CLIENT_SECRET, 'SLACK_CLIENT_SECRET must be set')
-const BASE_URL = process.env.BASE_URL
 const SLACK_CLIENT_ID = process.env.SLACK_CLIENT_ID
 const SLACK_CLIENT_SECRET = process.env.SLACK_CLIENT_SECRET
 
@@ -18,29 +16,33 @@ interface SlackAccessToken {
   expires_in: number
 }
 
+const REDIRECT_URI = '/api/auth/callback/slack'
 /**
  * Slack 認証画面への URL を生成する
  */
-export const generateAuthUrl = () => {
+export const generateAuthUrl = (request: Request) => {
   const params = new URLSearchParams({
     client_id: SLACK_CLIENT_ID,
     response_type: 'code',
     // access_type: 'offline', TODO: refresh_token を取得する場合は必要のはずだけど取れない
     scope: 'openid email profile',
     include_granted_scopes: 'true',
-    redirect_uri: `${BASE_URL}/api/auth/callback/slack`,
+    redirect_uri: new URL(REDIRECT_URI, request.url).toString(),
     nonce: '1',
     state: 'state1',
   })
   return `https://slack.com/openid/connect/authorize?${params.toString()}`
 }
 
-export const fetchAccessToken = async (code: string) => {
+export const fetchAccessToken = async (request: Request) => {
+  const code = new URL(request.url).searchParams.get('code')
+  invariant(code, 'No code found in the URL.')
+
   const params = new URLSearchParams({
     code,
     client_id: SLACK_CLIENT_ID,
     client_secret: SLACK_CLIENT_SECRET,
-    redirect_uri: `${BASE_URL}/api/auth/callback/slack`,
+    redirect_uri: new URL(REDIRECT_URI, request.url).toString(),
     grand_type: 'authorization_code',
   })
   const ret = await fetch(

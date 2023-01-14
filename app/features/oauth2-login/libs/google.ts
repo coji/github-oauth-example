@@ -1,10 +1,10 @@
 import invariant from 'tiny-invariant'
 import { createHash } from 'crypto'
+import { base64UrlEncode } from './utils'
 
-invariant(process.env.BASE_URL, 'BASE_URL must be set')
 invariant(process.env.GOOGLE_CLIENT_ID, 'GOOGLE_CLIENT_ID must be set')
 invariant(process.env.GOOGLE_CLIENT_SECRET, 'GOOGLE_CLIENT_SECRET must be set')
-const BASE_URL = process.env.BASE_URL
+
 const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID
 const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET
 const CODE_VERIFIER = 'verifier-text-is-here!'
@@ -22,28 +22,26 @@ const isGoogleUser = (user: unknown): user is GoogleUser => {
   return typeof user === 'object' && user !== null && 'email' in user
 }
 
-const base64UrlEncode = (str: string) =>
-  str.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '')
-
-export const redirectUri = () => `${BASE_URL}/api/auth/callback/google`
+export const REDIRECT_URI = '/api/auth/callback/google'
 
 /**
  * Google 認証画面への URL を生成する
  */
-export const generateAuthUrl = () => {
+export const generateAuthUrl = (request: Request) => {
   const params = new URLSearchParams({
     client_id: GOOGLE_CLIENT_ID,
     response_type: 'code',
-    // access_type: 'offline', TODO: refresh_token を取得する場合は必要のはずだけど取れない
+    access_type: 'offline', // TODO: refresh_token を取得する場合は必要のはずだけど取れない
     scope: 'openid email profile',
     include_granted_scopes: 'true',
-    redirect_uri: `${BASE_URL}/api/auth/callback/google`,
+    redirect_uri: new URL(REDIRECT_URI, request.url).toString(),
     nonce: '1',
     state: 'state1',
     code_challenge: base64UrlEncode(
       createHash('sha256').update(CODE_VERIFIER).digest('base64'),
     ),
     code_challenge_method: 'S256',
+    prompt: 'consent',
   })
   return `https://accounts.google.com/o/oauth2/v2/auth?${params.toString()}`
 }
@@ -52,7 +50,10 @@ export const generateAuthUrl = () => {
  * アクセストークンの取得
  * @param code 認証コード
  */
-export const fetchAccessToken = async (code: string) => {
+export const fetchAccessToken = async (request: Request) => {
+  const code = new URL(request.url).searchParams.get('code')
+  invariant(code, 'No code found in the URL.')
+
   const ret = await fetch('https://oauth2.googleapis.com/token', {
     method: 'POST',
     body: new URLSearchParams({
@@ -61,7 +62,8 @@ export const fetchAccessToken = async (code: string) => {
       grant_type: 'authorization_code',
       client_id: GOOGLE_CLIENT_ID,
       client_secret: GOOGLE_CLIENT_SECRET,
-      redirect_uri: redirectUri(),
+      redirect_uri: new URL(REDIRECT_URI, request.url).toString(),
+      prompt: 'concent',
     }).toString(),
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
