@@ -1,14 +1,10 @@
-import { Outlet } from '@remix-run/react'
-import type { LoaderArgs, ActionArgs } from '@remix-run/node'
+import type { LoaderArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, useLoaderData } from '@remix-run/react'
 import { Heading, Grid, Box, Button } from '@chakra-ui/react'
 
 import { auth } from '~/services/auth.server'
 import { getUser } from '~/models/user.server'
-
-export const action = async ({ request }: ActionArgs) =>
-  await auth.logout(request, { redirectTo: '/' })
 
 export const loader = async ({ request }: LoaderArgs) => {
   const { userId } = await auth.isAuthenticated(request, {
@@ -22,14 +18,17 @@ export default function Private() {
   const { user } = useLoaderData<typeof loader>()
   return (
     <Grid templateRows="auto 1fr auto" minH="100vh">
-      <Heading>
-        Remix OAuth Example private page
-        <Form method="post">
-          <Button type="submit">LogOut</Button>
+      <Heading>Remix OAuth Example private page</Heading>
+
+      <Box>
+        <Form method="post" action="/logout">
+          <Button colorScheme="blue" type="submit">
+            LogOut
+          </Button>
         </Form>
         <Box>{JSON.stringify(user)}</Box>
-      </Heading>
-      <Outlet />
+      </Box>
+
       <Box as="footer" p="4" textAlign="center">
         Copyright &copy; {new Date().getFullYear()} coji.
       </Box>
