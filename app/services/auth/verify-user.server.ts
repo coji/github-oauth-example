@@ -32,13 +32,10 @@ export const verifyUser: StrategyVerifyCallback<
   >
 > = async ({ profile, accessToken, refreshToken, extraParams, context }) => {
   invariant(profile.id, 'profile.id is required')
-  invariant(context, 'context is required')
-  invariant(context.provider, 'context.provider is required')
-  invariant(typeof context.provider === 'string', 'context.provider is string')
 
-  let user = await findUserByProviderUserId(context.provider, profile.id)
+  let user = await findUserByProviderUserId(profile.provider, profile.id)
   const userProps = {
-    provider: context.provider,
+    provider: profile.provider,
     providerUserId: profile.id,
     displayName: profile.displayName,
     email: profile.emails?.[0].value,

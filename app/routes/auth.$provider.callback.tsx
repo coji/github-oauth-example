@@ -7,8 +7,5 @@ export const loader = async ({ request, params }: LoaderArgs) => {
   return await auth.authenticate(params.provider, request, {
     successRedirect: '/private',
     failureRedirect: '/',
-    context: {
-      provider: params.provider,
-    },
   })
 }

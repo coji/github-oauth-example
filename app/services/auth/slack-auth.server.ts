@@ -9,7 +9,7 @@ export const strategy = new SlackStrategy(
   {
     clientID: process.env.SLACK_CLIENT_ID,
     clientSecret: process.env.SLACK_CLIENT_SECRET,
-    callbackURL: '/auth/slack/callback',
+    callbackURL: `${process.env.BASE_URL ?? '/'}auth/slack/callback`,
   },
   verifyUser,
 )
