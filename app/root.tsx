@@ -11,7 +11,7 @@ import { ChakraProvider } from '@chakra-ui/react'
 
 export const meta: MetaFunction = () => ({
   charset: 'utf-8',
-  title: 'Github OAuth example',
+  title: 'Remix OAuth Example',
   viewport: 'width=device-width,initial-scale=1',
 })
 
