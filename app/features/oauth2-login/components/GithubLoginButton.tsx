@@ -2,7 +2,7 @@ import { Form } from '@remix-run/react'
 import type { ButtonProps } from '@chakra-ui/react'
 import { Button } from '@chakra-ui/react'
 import { AiOutlineGithub } from 'react-icons/ai'
-import { useTransition } from '@remix-run/react'
+import { useNavigation } from '@remix-run/react'
 
 interface GithubLoginButtonProps extends ButtonProps {
   children?: React.ReactNode
@@ -12,7 +12,7 @@ export const GithubLoginButton = ({
   children,
   ...rest
 }: GithubLoginButtonProps) => {
-  const transition = useTransition()
+  const navigation = useNavigation()
 
   return (
     <Form method="get" action="/auth/github">
@@ -20,12 +20,12 @@ export const GithubLoginButton = ({
         bgColor="white"
         colorScheme="gray"
         isDisabled={
-          transition.state !== 'idle' &&
-          transition.submission?.action !== '/auth/github'
+          navigation.state !== 'idle' &&
+          navigation.formAction !== '/auth/github'
         }
         isLoading={
-          transition.state !== 'idle' &&
-          transition.submission?.action === '/auth/github'
+          navigation.state !== 'idle' &&
+          navigation.formAction === '/auth/github'
         }
         leftIcon={<AiOutlineGithub />}
         type="submit"
