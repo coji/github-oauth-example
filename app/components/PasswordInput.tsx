@@ -32,6 +32,7 @@ export const PasswordInput = React.forwardRef<
           aria-label={isOpen ? 'Mask password' : 'Reveal password'}
           icon={isOpen ? <HiEyeOff /> : <HiEye />}
           onClick={onClickReveal}
+          tabIndex={-1}
           variant="link"
         />
       </InputRightElement>
