@@ -25,14 +25,8 @@ export default function Index() {
   const isLoading = state !== 'idle'
 
   return (
-    <Grid
-      alignItems="center"
-      justifyItems="center"
-      templateRows="1fr auto"
-      h="100dvh"
-      bgColor="gray.50"
-    >
-      <VStack>
+    <Grid templateRows="1fr auto" h="100dvh" bgColor="gray.100">
+      <VStack alignSelf="center" w="full">
         <Heading p="4" size="md">
           coji&rsquo;s GitHub OAuth example
         </Heading>
@@ -87,8 +81,8 @@ export default function Index() {
         </Card>
       </VStack>
 
-      <Box as="footer" p="2">
-        copyright &copy; {new Date().getFullYear()} coji
+      <Box p="2" textAlign="center">
+        Copyright &copy; {new Date().getFullYear()} coji
       </Box>
     </Grid>
   )
