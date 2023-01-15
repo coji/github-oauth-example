@@ -28,7 +28,7 @@ export default function Index() {
     <Grid templateRows="1fr auto" h="100dvh" bgColor="gray.100">
       <VStack alignSelf="center" w="full">
         <Heading p="4" size="md">
-          coji&rsquo;s GitHub OAuth example
+          coji&rsquo;s Remix OAuth Example
         </Heading>
 
         <Card p="4" borderRadius="xl" shadow="md" bgColor="white">
