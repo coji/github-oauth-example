@@ -1,4 +1,4 @@
-import { SlackStrategy } from '../SlackStrategy.server'
+import { SlackStrategy } from '../../libs/SlackStrategy.server'
 import invariant from 'tiny-invariant'
 import { verifyUser } from './verify-user.server'
 

@@ -8,7 +8,10 @@ import type { StrategyVerifyCallback } from 'remix-auth'
 import type { OAuth2StrategyVerifyParams } from 'remix-auth-oauth2'
 import type { GitHubProfile, GitHubExtraParams } from 'remix-auth-github'
 import type { GoogleProfile, GoogleExtraParams } from 'remix-auth-google'
-import type { SlackProfile, SlackExtraParams } from '../SlackStrategy.server'
+import type {
+  SlackProfile,
+  SlackExtraParams,
+} from '../../libs/SlackStrategy.server'
 import type { SessionUser } from '../auth.server'
 
 export type SupportedSocialProviderProfile =
