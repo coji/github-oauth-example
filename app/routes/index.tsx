@@ -4,9 +4,9 @@ import {
   CardBody,
   Heading,
   Box,
+  Stack,
   VStack,
   HStack,
-  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -16,15 +16,20 @@ import {
 import { SlackLoginButton } from '~/features/oauth2-login/components/SlackLoginButton'
 import { GithubLoginButton } from '~/features/oauth2-login/components/GithubLoginButton'
 import { GoogleLoginButton } from '~/features/oauth2-login/components/GoogleLoginButton'
-import { PasswordField } from '~/components/PasswordField'
+import { PasswordInput } from '~/components/PasswordInput'
+import { useTransition } from '@remix-run/react'
+import { ContinueWithLabelBar } from '~/components/ContinueWithLabelBar'
 
 export default function Index() {
+  const { state } = useTransition()
+  const isLoading = state !== 'idle'
+
   return (
     <Grid
       alignItems="center"
       justifyItems="center"
       templateRows="1fr auto"
-      h="100vh"
+      h="100dvh"
       bgColor="gray.50"
     >
       <VStack>
@@ -32,12 +37,12 @@ export default function Index() {
           coji&rsquo;s GitHub OAuth example
         </Heading>
 
-        <Card p="4" borderRadius="xl" bgColor="white">
+        <Card p="4" borderRadius="xl" shadow="md" bgColor="white">
           <CardBody>
-            <VStack gap="6">
-              <VStack gap="4" w="full">
-                <FormControl>
-                  <FormLabel htmlFor="email">Email</FormLabel>
+            <Stack gap="4">
+              <Stack gap="4">
+                <FormControl isDisabled={isLoading}>
+                  <FormLabel htmlFor="email">Eメール</FormLabel>
                   <Input
                     bgColor="white"
                     id="email"
@@ -46,47 +51,45 @@ export default function Index() {
                   ></Input>
                 </FormControl>
 
-                <PasswordField />
+                <FormControl isDisabled={isLoading}>
+                  <FormLabel htmlFor="password">パスワード</FormLabel>
+                  <PasswordInput />
+                </FormControl>
 
-                <HStack justify="space-between" w="full">
-                  <Checkbox defaultChecked>ログインを記憶</Checkbox>
-                  <Button colorScheme="blue" size="sm" variant="link">
+                <HStack justify="space-between">
+                  <Checkbox defaultChecked isDisabled={isLoading}>
+                    ログインを記憶
+                  </Checkbox>
+                  <Button
+                    colorScheme="blue"
+                    isDisabled={isLoading}
+                    size="sm"
+                    variant="link"
+                  >
                     パスワードを忘れた?
                   </Button>
                 </HStack>
 
-                <Button w="full" colorScheme="blue">
+                <Button colorScheme="blue" isDisabled={isLoading}>
                   サインイン
                 </Button>
-              </VStack>
+              </Stack>
 
-              <Box pos="relative" w="full">
-                <Flex pos="absolute" align="center" inset="0">
-                  <Box
-                    w="full"
-                    borderWidth="100%"
-                    borderTop="1px"
-                    borderTopColor="gray.200"
-                  />
-                </Flex>
-                <Flex pos="relative" justify="center">
-                  <Box display="inline-block" px="2" bgColor="white">
-                    Or continue with
-                  </Box>
-                </Flex>
-              </Box>
+              <ContinueWithLabelBar>または</ContinueWithLabelBar>
 
-              <Grid gap="4" templateColumns="1fr 1fr 1fr" w="full">
-                <SlackLoginButton />
-                <GithubLoginButton />
-                <GoogleLoginButton />
+              <Grid gap="4" templateColumns={['1fr', '6.5rem 6.5rem 6.5rem']}>
+                <SlackLoginButton w={['full', '6.5rem']} />
+                <GithubLoginButton w={['full', '6.5rem']} />
+                <GoogleLoginButton w={['full', '6.5rem']} />
               </Grid>
-            </VStack>
+            </Stack>
           </CardBody>
         </Card>
       </VStack>
 
-      <Box as="footer">copyright &copy; 2021 coji.</Box>
+      <Box as="footer" p="2">
+        copyright &copy; {new Date().getFullYear()} coji
+      </Box>
     </Grid>
   )
 }
