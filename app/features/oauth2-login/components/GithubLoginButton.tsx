@@ -21,7 +21,6 @@ export const GithubLoginButton = ({
       <Button
         bgColor="white"
         colorScheme="gray"
-        isDisabled={isLoading}
         isLoading={isLoading}
         leftIcon={<AiOutlineGithub />}
         type="submit"

@@ -78,12 +78,23 @@ export default function Index() {
                 </Button>
               </Stack>
 
-              <ContinueWithLabelBar>または</ContinueWithLabelBar>
+              <ContinueWithLabelBar color={isLoading ? 'gray.200' : undefined}>
+                または
+              </ContinueWithLabelBar>
 
               <Grid gap="4" templateColumns={['1fr', '6.5rem 6.5rem 6.5rem']}>
-                <SlackLoginButton w={['full', '6.5rem']} />
-                <GithubLoginButton w={['full', '6.5rem']} />
-                <GoogleLoginButton w={['full', '6.5rem']} />
+                <SlackLoginButton
+                  isDisabled={isLoading}
+                  w={['full', '6.5rem']}
+                />
+                <GithubLoginButton
+                  isDisabled={isLoading}
+                  w={['full', '6.5rem']}
+                />
+                <GoogleLoginButton
+                  isDisabled={isLoading}
+                  w={['full', '6.5rem']}
+                />
               </Grid>
             </Stack>
           </CardBody>

@@ -21,7 +21,6 @@ export const GoogleLoginButton = ({
       <Button
         bgColor="white"
         colorScheme="gray"
-        isDisabled={isLoading}
         isLoading={isLoading}
         leftIcon={<AiOutlineGoogle />}
         type="submit"

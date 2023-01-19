@@ -21,7 +21,6 @@ export const SlackLoginButton = ({
       <Button
         bgColor="white"
         colorScheme="gray"
-        isDisabled={isLoading}
         isLoading={isLoading}
         leftIcon={<AiOutlineSlack />}
         type="submit"
