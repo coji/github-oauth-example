@@ -1,7 +1,7 @@
 import type { LoaderArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
 import { Form, useLoaderData } from '@remix-run/react'
-import { Heading, Grid, Box, Button, Card, CardBody } from '@chakra-ui/react'
+import { Heading, Grid, Box, Button } from '@chakra-ui/react'
 
 import { auth } from '~/services/auth.server'
 import { getUser } from '~/models/user.server'
@@ -11,6 +11,9 @@ export const loader = async ({ request }: LoaderArgs) => {
     failureRedirect: '/',
   })
   const user = await getUser(userId)
+  if (!user) {
+    return await auth.logout(request, { redirectTo: '/' })
+  }
   return json({ user })
 }
 
@@ -27,14 +30,10 @@ export default function Private() {
         </Form>
       </Heading>
 
-      <Box p="4">
-        <Card color="gray.200" bgColor="black">
-          <CardBody>
-            <Box overflow="auto" w="full" whiteSpace="pre">
-              {JSON.stringify(user, null, 2)}
-            </Box>
-          </CardBody>
-        </Card>
+      <Box w="100%" p="4">
+        <Box overflowX="auto" color="gray.200" bgColor="black">
+          <code>{JSON.stringify(user, null, 2)}</code>
+        </Box>
       </Box>
 
       <Box as="footer" p="2" textAlign="center">
