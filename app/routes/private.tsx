@@ -30,9 +30,9 @@ export default function Private() {
         </Form>
       </Heading>
 
-      <Box w="100%" p="4">
-        <Box overflowX="auto" color="gray.200" bgColor="black">
-          <code>{JSON.stringify(user, null, 2)}</code>
+      <Box overflowX="auto" p="4">
+        <Box p="4" color="gray.200" bgColor="black" rounded="md">
+          <Box whiteSpace="pre">{JSON.stringify(user, null, 2)}</Box>
         </Box>
       </Box>
 

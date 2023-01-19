@@ -1,6 +1,6 @@
 import invariant from 'tiny-invariant'
 /**
- * ngrokでローカル環境を公開している場合に応じた適正なリクエストURLを生成する
+ * ngrokでローカル環境を公開している場合などで forwarded 系ヘッダに応じた適正なリクエストURLを生成する
  * @param req
  * @returns
  */
