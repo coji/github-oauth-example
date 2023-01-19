@@ -13,20 +13,16 @@ export const GithubLoginButton = ({
   ...rest
 }: GithubLoginButtonProps) => {
   const navigation = useNavigation()
+  const isLoading =
+    navigation.state === 'loading' && navigation.formAction === '/auth/github'
 
   return (
-    <Form method="get" action="/auth/github">
+    <Form action="/auth/github">
       <Button
         bgColor="white"
         colorScheme="gray"
-        isDisabled={
-          navigation.state !== 'idle' &&
-          navigation.formAction !== '/auth/github'
-        }
-        isLoading={
-          navigation.state !== 'idle' &&
-          navigation.formAction === '/auth/github'
-        }
+        isDisabled={isLoading}
+        isLoading={isLoading}
         leftIcon={<AiOutlineGithub />}
         type="submit"
         variant="outline"

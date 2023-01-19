@@ -13,20 +13,16 @@ export const GoogleLoginButton = ({
   ...rest
 }: GoogleLoginButtonProps) => {
   const navigation = useNavigation()
+  const isLoading =
+    navigation.state === 'loading' && navigation.formAction === '/auth/google'
 
   return (
-    <Form method="get" action="/auth/google">
+    <Form action="/auth/google">
       <Button
         bgColor="white"
         colorScheme="gray"
-        isDisabled={
-          navigation.state !== 'idle' &&
-          navigation.formAction !== '/auth/google'
-        }
-        isLoading={
-          navigation.state !== 'idle' &&
-          navigation.formAction === '/auth/google'
-        }
+        isDisabled={isLoading}
+        isLoading={isLoading}
         leftIcon={<AiOutlineGoogle />}
         type="submit"
         variant="outline"

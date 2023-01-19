@@ -13,18 +13,16 @@ export const SlackLoginButton = ({
   ...rest
 }: GithubLoginButtonProps) => {
   const navigation = useNavigation()
+  const isLoading =
+    navigation.state === 'loading' && navigation.formAction === '/auth/slack'
 
   return (
     <Form action="/auth/slack">
       <Button
         bgColor="white"
         colorScheme="gray"
-        isDisabled={
-          navigation.state !== 'idle' && navigation.formAction !== '/auth/slack'
-        }
-        isLoading={
-          navigation.state !== 'idle' && navigation.formAction === '/auth/slack'
-        }
+        isDisabled={isLoading}
+        isLoading={isLoading}
         leftIcon={<AiOutlineSlack />}
         type="submit"
         variant="outline"
