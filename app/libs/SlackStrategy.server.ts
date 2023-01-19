@@ -11,6 +11,7 @@ export interface SlackStrategyOptions {
   clientSecret: string
   callbackURL: string
   scope?: SlackScope[] | string
+  team?: string
 }
 
 export type SlackScope = 'openid' | 'profile' | 'email'
@@ -76,8 +77,9 @@ export class SlackStrategy<User> extends OAuth2Strategy<
   name = 'slack'
 
   private scope: SlackScope[]
+  private team?: string
   constructor(
-    { clientID, clientSecret, callbackURL, scope }: SlackStrategyOptions,
+    { clientID, clientSecret, callbackURL, scope, team }: SlackStrategyOptions,
     verify: StrategyVerifyCallback<
       User,
       OAuth2StrategyVerifyParams<SlackProfile, SlackExtraParams>
@@ -94,6 +96,7 @@ export class SlackStrategy<User> extends OAuth2Strategy<
       verify,
     )
     this.scope = this.getScope(scope)
+    this.team = team
   }
 
   private getScope(scope: SlackStrategyOptions['scope']) {
@@ -106,9 +109,12 @@ export class SlackStrategy<User> extends OAuth2Strategy<
   }
 
   protected authorizationParams() {
-    return new URLSearchParams({
-      scope: this.scope.join(SlackStrategyScopeSeparator),
-    })
+    const params = new URLSearchParams()
+    params.set('scope', this.scope.join(SlackStrategyScopeSeparator))
+    if (this.team) {
+      params.set('team', this.team)
+    }
+    return params
   }
 
   protected async getAccessToken(response: Response): Promise<{
