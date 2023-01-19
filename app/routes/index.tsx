@@ -19,6 +19,15 @@ import { GoogleLoginButton } from '~/features/oauth2-login/components/GoogleLogi
 import { PasswordInput } from '~/components/PasswordInput'
 import { useTransition } from '@remix-run/react'
 import { ContinueWithLabelBar } from '~/components/ContinueWithLabelBar'
+import { json, type LoaderArgs } from '@remix-run/node'
+import { auth } from '~/services/auth.server'
+
+export const loader = async ({ request }: LoaderArgs) => {
+  await auth.isAuthenticated(request, {
+    successRedirect: '/private',
+  })
+  return json({})
+}
 
 export default function Index() {
   const { state } = useTransition()
