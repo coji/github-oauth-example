@@ -1,17 +1,15 @@
-import { addUser, findUserByEmail, updateUser } from '~/models/user.server'
+import { addUser, findUserByEmail } from '~/models/user.server'
 import invariant from 'tiny-invariant'
 import type { StrategyVerifyCallback } from 'remix-auth'
 import {
   type SupportedSocialProviderProfile,
   type SupportedSocialProviderExtraParams,
-  isSlackProfile,
-  isSlackExtraParams,
 } from './supported-social-provider.server'
 import type { OAuth2StrategyVerifyParams } from 'remix-auth-oauth2'
 import type { SessionUser } from '../auth.server'
 import { isSupportedSocialProvider } from './supported-social-provider.server'
 import { buildUserProps } from '~/models/user.server'
-import { upsertOAuth2ProfileSlack } from '~/models/oauth2-profile-slack.server'
+import { upsertOAuth2Profile } from '~/models/oauth2-profile.server'
 
 export const verifyUser: StrategyVerifyCallback<
   SessionUser,
@@ -27,29 +25,15 @@ export const verifyUser: StrategyVerifyCallback<
   invariant(profile.id, 'profile.id is required')
   invariant(profile.emails?.[0].value, 'profile.email is required')
 
-  // oauth2 profile 等を保存
-  if (isSlackProfile(profile) && isSlackExtraParams(profile, extraParams)) {
-    await upsertOAuth2ProfileSlack({
-      profile,
-      accessToken,
-      refreshToken,
-      extraParams,
-    })
-  }
-
+  await upsertOAuth2Profile({ profile, accessToken, refreshToken, extraParams })
   let user = await findUserByEmail(profile.emails?.[0].value)
-  const userProps = buildUserProps(user, profile)
   if (!user) {
     // 新規ユーザ
+    const userProps = buildUserProps(user, profile)
     user = await addUser(userProps)
-  } else {
-    await updateUser({
-      id: user.id,
-      ...userProps,
-    })
-  }
-  if (!user) {
-    throw new Error('User not found')
+    if (!user) {
+      throw new Error('User not found')
+    }
   }
 
   return { userId: user.id }
