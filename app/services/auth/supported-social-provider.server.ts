@@ -30,7 +30,19 @@ export type SupportedSocialProviderProfile =
   | GoogleProfile
   | SlackProfile
 
+export const isSlackProfile = (profile: unknown): profile is SlackProfile =>
+  !!profile &&
+  typeof profile === 'object' &&
+  'provider' in profile &&
+  profile.provider === SocialProvider.SLACK
+
 export type SupportedSocialProviderExtraParams =
   | GitHubExtraParams
   | GoogleExtraParams
   | SlackExtraParams
+
+export const isSlackExtraParams = (
+  profile: SupportedSocialProviderProfile,
+  extraParams: unknown,
+): extraParams is SlackExtraParams =>
+  isSlackProfile(profile) && !!extraParams && typeof extraParams === 'object'
