@@ -7,26 +7,8 @@ import type {
 } from './supported-social-provider.server'
 import type { OAuth2StrategyVerifyParams } from 'remix-auth-oauth2'
 import type { SessionUser } from '../auth.server'
-import {
-  isSupportedSocialProvider,
-  type SupportedSocialProvider,
-} from './supported-social-provider.server'
-
-/**
- * プロバイダをマージする
- * @param providers
- * @param provider
- * @returns
- */
-const mergeProviders = (
-  providers: SupportedSocialProvider[],
-  provider: SupportedSocialProvider,
-) => {
-  if (providers.includes(provider)) {
-    return providers
-  }
-  return [...providers, provider]
-}
+import { isSupportedSocialProvider } from './supported-social-provider.server'
+import { buildUserProps } from '~/models/user.server'
 
 export const verifyUser: StrategyVerifyCallback<
   SessionUser,
@@ -43,19 +25,7 @@ export const verifyUser: StrategyVerifyCallback<
   invariant(profile.emails?.[0].value, 'profile.email is required')
 
   let user = await findUserByEmail(profile.emails?.[0].value)
-
-  const userProps = {
-    ...user,
-    providers:
-      user && user.providers
-        ? mergeProviders(user.providers, profile.provider)
-        : [profile.provider],
-    [`${profile.provider}UserId`]: profile.id,
-    displayName: profile.displayName,
-    email: profile.emails?.[0].value,
-    photoURL: profile.photos?.[0].value,
-  }
-
+  const userProps = buildUserProps(user, profile)
   if (!user) {
     // 新規ユーザ
     user = await addUser(userProps)

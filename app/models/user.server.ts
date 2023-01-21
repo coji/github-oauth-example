@@ -3,8 +3,13 @@ import type {
   FirestoreDataConverter,
   QueryDocumentSnapshot,
 } from 'firebase-admin/firestore'
-import type { SupportedSocialProvider } from '~/services/auth/supported-social-provider.server'
+import {
+  isSupportedSocialProvider,
+  type SupportedSocialProvider,
+  type SupportedSocialProviderProfile,
+} from '~/services/auth/supported-social-provider.server'
 import dayjs from 'dayjs'
+import invariant from 'tiny-invariant'
 
 export interface User {
   id: string
@@ -45,6 +50,22 @@ const converter: FirestoreDataConverter<User> = {
   },
 }
 
+/**
+ * プロバイダをマージする
+ * @param providers
+ * @param provider
+ * @returns
+ */
+const mergeProviders = (
+  providers: SupportedSocialProvider[],
+  provider: SupportedSocialProvider,
+) => {
+  if (providers.includes(provider)) {
+    return providers
+  }
+  return [...providers, provider]
+}
+
 export const findUserByProviderUserId = async (
   provider: SupportedSocialProvider,
   providerUserId: string,
@@ -74,6 +95,28 @@ export const findUserByEmail = async (email: string) => {
     return null
   }
   return users.docs[0].data()
+}
+
+export const buildUserProps = (
+  user: User | null,
+  profile: SupportedSocialProviderProfile,
+): Omit<User, 'id' | 'updatedAt' | 'createdAt'> => {
+  invariant(
+    isSupportedSocialProvider(profile.provider),
+    'provider not supported',
+  )
+
+  return {
+    ...user,
+    providers:
+      user && user.providers
+        ? mergeProviders(user.providers, profile.provider)
+        : [profile.provider],
+    [`${profile.provider}UserId`]: profile.id,
+    displayName: profile.displayName,
+    email: profile.emails?.[0].value,
+    photoURL: profile.photos?.[0].value,
+  }
 }
 
 export const addUser = async (
